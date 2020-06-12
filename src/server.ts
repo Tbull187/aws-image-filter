@@ -36,7 +36,7 @@ import Jimp = require('jimp');
     const { image_url } = req.query;
 
     if(!image_url) {
-      return res.status(400).send('Image url must exist');
+      return res.status(400).send('"image_url" query param must exist.');
     }
 
     let filePath: string;
@@ -45,13 +45,13 @@ import Jimp = require('jimp');
         filePath = path;
       })
       
-      // deleteLocalFiles([filePath]);
-      
-      return res.status(200).sendFile(filePath);
+      return res.status(200).sendFile(filePath, () => {
+        deleteLocalFiles([filePath]);
+      });
     }
     catch(e) {
       console.log(e);
-      res.status(500).send('error filtering img');
+      return res.status(500).send('error filtering the image.');
     }
   })
   
